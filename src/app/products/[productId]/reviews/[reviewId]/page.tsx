@@ -1,19 +1,28 @@
 import { notFound } from "next/navigation";
 
-export default function Review({
-  params,
-}: Readonly<{
-  params: {
-    productId: string;
-    reviewId: string;
-  };
-}>) {
-  if (parseInt(params.reviewId) > 1000) {
+type Props = {
+  params: Promise<{ reviewId: string; productId: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
+function getRandomInt(count: number) {
+  return Math.floor(Math.random() * count);
+}
+
+export default async function Review({ params }: Props) {
+  const reviewId = (await params).reviewId;
+  const productId = (await params).productId;
+
+  const random = getRandomInt(2);
+  if (random === 1) {
+    throw new Error("Erro ao carregar review");
+  }
+  if (parseInt(reviewId) > 1000) {
     notFound();
   }
   return (
     <h1>
-      Review {params.reviewId} for product {params.productId}
+      Review {reviewId} for product {productId}
     </h1>
   );
 }
